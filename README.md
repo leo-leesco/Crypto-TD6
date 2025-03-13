@@ -12,9 +12,9 @@ If you want the optimized version, run `cargo build --release`, and the executab
 
 `keygen` expects a filename, named `prefix`, and writes the (32-byte hex encoded) public key to `stdout` and the secret key to `prefix.sk`.
 
-`encaps` expects a (32-byte hex encoded) public key and writes a ($N=(32+$ length of encrypted message) hex encoded) ciphertext and a (16-byte hex encoded) symmetric encryption key to `stdout` on two separate lines.
+`encaps` expects a (32-byte hex encoded) public key and writes a (32-byte hex encoded) ciphertext and a (16-byte hex encoded) symmetric encryption key to `stdout` on two separate lines.
 
-`decaps` expects the filename of the private key and the $N$-byte (hex encoded) ciphertext and writes a (16-byte hex encoded) symmetric encryption key to `stdout`.
+`decaps` expects the filename of the private key and the N-byte (hex encoded) ciphertext and writes a (16-byte hex encoded) symmetric encryption key to `stdout`.
 
 ## Theoretical framework
 
