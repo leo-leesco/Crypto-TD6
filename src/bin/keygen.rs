@@ -1,17 +1,15 @@
-use std::env::args;
-use std::fs::OpenOptions;
-use std::fs::write;
-use std::io::Write;
+use std::{
+    env::args,
+    fs::{OpenOptions, write},
+    io::Write,
+};
 
-use ed25519_dalek::PUBLIC_KEY_LENGTH;
-use ed25519_dalek::SigningKey;
-use rand::Rng;
-use rand::rngs::OsRng;
-use rand::thread_rng;
-use sha3::Shake128;
-use sha3::digest::ExtendableOutput;
-use sha3::digest::Update;
-use sha3::digest::XofReader;
+use ed25519_dalek::{PUBLIC_KEY_LENGTH, SigningKey};
+use rand::{Rng, rngs::OsRng, thread_rng};
+use sha3::{
+    Shake128,
+    digest::{ExtendableOutput, Update, XofReader},
+};
 
 fn main() {
     let prefix = args()

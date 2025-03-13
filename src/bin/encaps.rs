@@ -1,14 +1,11 @@
 use std::env::args;
 
-use ed25519_dalek::PUBLIC_KEY_LENGTH;
-use ed25519_dalek::SigningKey;
-use rand::Rng;
-use rand::rngs::OsRng;
-use rand::thread_rng;
-use sha3::Shake128;
-use sha3::digest::ExtendableOutput;
-use sha3::digest::Update;
-use sha3::digest::XofReader;
+use ed25519_dalek::{PUBLIC_KEY_LENGTH, SigningKey};
+use rand::{Rng, rngs::OsRng, thread_rng};
+use sha3::{
+    Shake128,
+    digest::{ExtendableOutput, Update, XofReader},
+};
 
 fn main() {
     let mut pk: [u8; PUBLIC_KEY_LENGTH] = [0; PUBLIC_KEY_LENGTH];
