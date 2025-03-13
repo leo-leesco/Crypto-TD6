@@ -1,10 +1,14 @@
 use std::env::args;
 
-use ed25519_dalek::{PUBLIC_KEY_LENGTH, SigningKey};
-use rand::{Rng, rngs::OsRng, thread_rng};
+use TD6::{MESSAGE_SIZE, PUBLIC_KEY_LENGTH};
+use chacha20poly1305::{
+    KeyInit, Nonce, XChaCha20Poly1305,
+    aead::{Aead, Payload},
+};
+use rand::{Rng, thread_rng};
 use sha3::{
     Shake128,
-    digest::{ExtendableOutput, Update, XofReader},
+    digest::{ExtendableOutput, Update, XofReader, generic_array::GenericArray},
 };
 
 fn main() {
@@ -15,15 +19,12 @@ fn main() {
     )
     .expect("Could not parse public key as a 32-byte hex string");
 
-    let sk = SigningKey::generate(&mut OsRng);
-    let pk = sk.verifying_key();
-
     let mut rng = thread_rng();
-    let mut m = [0u8; PUBLIC_KEY_LENGTH];
+    let mut m = [0u8; MESSAGE_SIZE];
     rng.fill(&mut m);
 
     let mut g1 = Shake128::default();
-    g1.update(pk.as_bytes());
+    g1.update(&pk);
     let mut pk_hash = [0u8; 128];
     g1.finalize_xof().read(&mut pk_hash);
 
@@ -36,12 +37,16 @@ fn main() {
     let r = &rk[..rk.len() / 2];
     let k = &rk[rk.len() / 2..];
 
-    let c: Vec<u8> = m
-        .iter()
-        .zip(pk.as_bytes())
-        .zip(r)
-        .map(|((a, b), c)| a ^ b ^ c)
-        .collect();
+    let cipher = XChaCha20Poly1305::new(pk.as_slice().into());
+    let c = cipher
+        .encrypt(
+            GenericArray::from_slice(r),
+            Payload {
+                msg: &m,
+                aad: &[], // Associated data (if any)
+            },
+        )
+        .expect("Could not encrypt message");
 
     let mut f = Shake128::default();
     f.update(&c);
