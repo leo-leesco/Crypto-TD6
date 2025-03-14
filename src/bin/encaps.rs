@@ -2,7 +2,7 @@ use std::env::args;
 
 use TD6::{MESSAGE_SIZE, PUBLIC_KEY_LENGTH};
 use chacha20poly1305::{
-    KeyInit, Nonce, XChaCha20Poly1305,
+    KeyInit, XChaCha20Poly1305,
     aead::{Aead, Payload},
 };
 use rand::{Rng, thread_rng};
@@ -37,7 +37,7 @@ fn main() {
     let r = &rk[..rk.len() / 2];
     let k = &rk[rk.len() / 2..];
 
-    let cipher = XChaCha20Poly1305::new(pk.as_slice().into());
+    let cipher = XChaCha20Poly1305::new(GenericArray::from_slice(&pk));
     let c = cipher
         .encrypt(
             GenericArray::from_slice(r),
